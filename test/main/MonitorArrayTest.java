@@ -23,5 +23,17 @@ public class MonitorArrayTest {
 		
 		assertEquals(1, lista.size());
 	}
+	
+	
+	@Test
+	public void cuandoLlegoAlLimiteDelArray_10_yAgregoUnElementoSeAgregaCorrectamente() {
+		for (int i = 0; i < 10; i++) {
+			lista.add(i);
+		}
+		
+		lista.add(20);
+		
+		assertEquals(11, lista.size());
+	}
 
 }
