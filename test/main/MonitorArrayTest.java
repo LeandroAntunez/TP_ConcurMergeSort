@@ -1,9 +1,11 @@
-package java;
+package main;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import main.MonitorArray;
 
 public class MonitorArrayTest {
 	
@@ -16,8 +18,10 @@ public class MonitorArrayTest {
 	}
 
 	@Test
-	public void test() {
-		fail("Not yet implemented");
+	public void cuandoAgregoUnElementoALaListaSuSizeEs1() {
+		lista.add(20);
+		
+		assertEquals(1, lista.size());
 	}
 
 }
