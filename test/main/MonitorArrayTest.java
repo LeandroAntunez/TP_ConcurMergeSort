@@ -35,5 +35,18 @@ public class MonitorArrayTest {
 		
 		assertEquals(11, lista.size());
 	}
+	
+	@Test
+	public void cuandoSeHacePopSeSacaDeLaListaYElSizeSeActualizaEnMenosUno() {
+		lista.add(20);
+		lista.add(9);
+		
+		assertEquals(2, lista.size());
+		
+		int numeroObtenido = lista.pop();
+		
+		assertEquals(1, lista.size());
+		assertFalse(lista.contains(numeroObtenido));
+	}
 
 }
