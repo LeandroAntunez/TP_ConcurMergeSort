@@ -1,4 +1,4 @@
-package java;
+package main;
 
 public class MonitorArray {
 
@@ -22,7 +22,7 @@ public class MonitorArray {
 
     /**
      * add que agrega un elemento al final de la lista (si no hay suficiente espacio en el
-     array debe crearse uno nuevo del doble de tamaño y copiar todos los elementos
+     array debe crearse uno nuevo del doble de tamaï¿½o y copiar todos los elementos
      contenidos en el original)
      * @param e
      */
@@ -37,6 +37,7 @@ public class MonitorArray {
             this.lista = listaAuxiliar;
         }
         lista[contadorPosicion] = e;
+        contadorPosicion++;
         notifyAll();
     }
 
