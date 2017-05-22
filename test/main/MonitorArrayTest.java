@@ -48,5 +48,35 @@ public class MonitorArrayTest {
 		assertEquals(1, lista.size());
 		assertFalse(lista.contains(numeroObtenido));
 	}
+	
+	
+	@Test
+	public void cuandoHagoUnaSublistaHastalaPrimeraMitadDeElementosReciboUnaListaDeLaPrimeraALaMitad() {
+		lista.add(1);
+		lista.add(3);
+		lista.add(4);
+		lista.add(6);
+		
+		MonitorArray sublista = lista.primeraMitad(0, 2);
+		
+		// Compruebo que recibo la mitad de elementos.
+		assertEquals(2, sublista.size());
+		
+		int primerElemento = sublista.pop();
+		int segundoElemento = sublista.pop();
+		
+		// Compruebo que la sublista tiene los elementos correspondientes.
+		assertEquals(1, primerElemento);
+		assertEquals(3, segundoElemento);
+		
+		// Compruebo que al quitarle los elementos, los cuales son la primera mitad de la lista
+		// original, queda vacia.
+		assertTrue(sublista.isEmpty());
+		
+		
+	}
+	
+	
+	
 
 }

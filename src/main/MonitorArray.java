@@ -6,7 +6,6 @@ public class MonitorArray {
     private int[] lista = new int[limite];
     private int contadorPosicion = 0;
 
-
     public synchronized int size(){ return contadorPosicion;}
 
     public synchronized boolean isEmpty() { return contadorPosicion == 0; }
@@ -70,9 +69,46 @@ public class MonitorArray {
         return resultado;
     }
 
+    /*
+    mergesort ( list ) {
+		if ( list . size () <= 1) return;
+		left = list . sublist (0, list . size ()/2);
+		right = list . sublist ( list . size ()/2 , list . size ());
+		mergesort ( left );
+		mergesort ( right );
+		list = merge (left , right );
+		}
+     */
+
+    public synchronized void mergesort(MonitorArray list){
+    	if (this.size() <= 1) { }
+    	else {
+    		MonitorArray left = list.primeraMitad(0, list.size()/2);
+    		MonitorArray right = list;
+    		this.mergesort(left);
+    		this.mergesort(right);
+    		//list = merge(left, right);
+    		
+    		
+    	}
+   
+    }
 
 
+	public MonitorArray primeraMitad(int primerPosicion, int ultimaPosicion) {
+		// Funcion auxiliar: Retorna una sublista de la clase MonitorArray,
+		// a partir de una lista con un rango el cual determina el primer y
+		// ultimo elemento de esa sublista.
+		MonitorArray listaAux = new MonitorArray();
+		int totalElementos = ultimaPosicion - primerPosicion;
+		
+		while(0 < totalElementos){ 
+			listaAux.add(this.pop());
+			totalElementos--;
+			}
+		return listaAux;
+	}
 
-
+    
 
 }
