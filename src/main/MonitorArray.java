@@ -69,16 +69,16 @@ public class MonitorArray {
         return resultado;
     }
 
-    /*
-    mergesort ( list ) {
-		if ( list . size () <= 1) return;
-		left = list . sublist (0, list . size ()/2);
-		right = list . sublist ( list . size ()/2 , list . size ());
-		mergesort ( left );
-		mergesort ( right );
-		list = merge (left , right );
-		}
-     */
+    
+    public synchronized void sort(int cantidadMonitores, MonitorArray list){
+    	
+    	
+    	mergesort(list);
+    	
+    	
+    }
+    
+    
 
     public synchronized void mergesort(MonitorArray list){
     	if (this.size() <= 1) { }
@@ -87,8 +87,8 @@ public class MonitorArray {
     		MonitorArray right = list;
     		this.mergesort(left);
     		this.mergesort(right);
-    		//list = merge(left, right);
-    		
+    		///
+    		list = merge(left, right);
     		
     	}
    
@@ -113,14 +113,14 @@ public class MonitorArray {
      * la primera lista es menor al de la segunda, despues agrega al menor en otra lista
      * y asi hasta que una de las dos esté vacia
      */
-	public int[] merge(MonitorArray left, MonitorArray right) {
-		int[] listaOrdenada = new int[left.size() + right.size()];
+	public MonitorArray merge(MonitorArray left, MonitorArray right) {
+		MonitorArray listaOrdenada = new MonitorArray();
 		int posicionActual = 0;
 		while(!left.isEmpty() && !right.isEmpty()) {
 			if(left.peek() <= right.peek())
-				listaOrdenada[posicionActual] = left.pop();
+				listaOrdenada.add(left.pop());
 			else
-				listaOrdenada[posicionActual] = right.pop();
+				listaOrdenada.add(right.pop());
 			posicionActual++;
 		}
 		this.addAll(listaOrdenada, left, posicionActual);
@@ -128,13 +128,14 @@ public class MonitorArray {
 		return listaOrdenada;
 	}
 
-	private void addAll(int[] listaOrdenada, MonitorArray lista, int posicionActual) {
+	private void addAll(MonitorArray listaOrdenada, MonitorArray lista, int posicionActual) {
 		while(!lista.isEmpty()) {
-			listaOrdenada[posicionActual] = lista.pop();
+			listaOrdenada.add(lista.pop());
 			posicionActual++;
 		}
 	}
 
+	
     
 
 }
