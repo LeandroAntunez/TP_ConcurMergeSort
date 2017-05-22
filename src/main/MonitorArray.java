@@ -108,6 +108,32 @@ public class MonitorArray {
 			}
 		return listaAux;
 	}
+	
+    /* Recibe dos listas, que ya estan ordenadas, y verifica que el primer elemento de 
+     * la primera lista es menor al de la segunda, despues agrega al menor en otra lista
+     * y asi hasta que una de las dos esté vacia
+     */
+	public int[] merge(MonitorArray left, MonitorArray right) {
+		int[] listaOrdenada = new int[left.size() + right.size()];
+		int posicionActual = 0;
+		while(!left.isEmpty() && !right.isEmpty()) {
+			if(left.peek() <= right.peek())
+				listaOrdenada[posicionActual] = left.pop();
+			else
+				listaOrdenada[posicionActual] = right.pop();
+			posicionActual++;
+		}
+		this.addAll(listaOrdenada, left, posicionActual);
+		this.addAll(listaOrdenada, right, posicionActual);
+		return listaOrdenada;
+	}
+
+	private void addAll(int[] listaOrdenada, MonitorArray lista, int posicionActual) {
+		while(!lista.isEmpty()) {
+			listaOrdenada[posicionActual] = lista.pop();
+			posicionActual++;
+		}
+	}
 
     
 
