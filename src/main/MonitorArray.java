@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Arrays;
+
 public class MonitorArray {
 
     private int limite = 10;
@@ -69,32 +71,79 @@ public class MonitorArray {
         return resultado;
     }
 
-    /*
-    mergesort ( list ) {
-		if ( list . size () <= 1) return;
-		left = list . sublist (0, list . size ()/2);
-		right = list . sublist ( list . size ()/2 , list . size ());
-		mergesort ( left );
-		mergesort ( right );
-		list = merge (left , right );
-		}
-     */
 
-    public synchronized void mergesort(MonitorArray list){
-    	if (this.size() <= 1) { }
-    	else {
-    		MonitorArray left = list.primeraMitad(0, list.size()/2);
-    		MonitorArray right = list;
-    		this.mergesort(left);
-    		this.mergesort(right);
-    		//list = merge(left, right);
+    public int[] getLista() {
+    	return lista;
+    }
+    
+    
+    
+    public void sort(int nroThreads) {
+    	threadSort(this, nroThreads);
+    }
+
+    
+	private void threadSort(MonitorArray array, int nroThreads) {
+		if(nroThreads <= 1) {
+    		mergeSort(array);
+    	} else {
+    		MonitorArray left  = array.primeraMitad(0, array.size()/2);
+    		MonitorArray right = array;
     		
+    		Thread threadLeft  = threadMergeSort(left, nroThreads);
+    		Thread threadRight = threadMergeSort(left, nroThreads);
     		
+    		threadLeft.start();
+    		threadRight.start();
+    		    		
+    		merge(array, left, right);
     	}
-   
+	}
+    
+    
+    private Thread threadMergeSort(MonitorArray array, int nroThreads) {
+    	return new Thread() {
+            @Override
+            public void run()
+            {
+                threadSort(array, nroThreads / 2);
+                System.out.println(this.getName());
+            }
+        };
+	}
+
+    
+	public synchronized void mergeSort(MonitorArray lista){
+    	if (this.size() > 1) { 
+    		MonitorArray left = lista.primeraMitad(0, lista.size()/2);
+    		MonitorArray right = lista;
+    		mergeSort(left);
+    		mergeSort(right);
+    		merge(lista, left, right);
+    	}
     }
 
 
+    /* Recibe dos listas, que ya estan ordenadas, y verifica que el primer elemento de 
+     * la primera lista es menor al de la segunda, despues agrega al menor en otra lista
+     * y asi hasta que una de las dos esta vacia
+     */
+	public void merge(MonitorArray array, MonitorArray left, MonitorArray right) {
+		int contador = 0;
+		
+		while(!left.isEmpty() && !right.isEmpty()) {
+			if(left.peek() <= right.peek())
+				array.lista[contador] = left.pop();
+			else
+				array.lista[contador] =  right.pop();
+			contador++;
+		}
+		
+		this.addAll(array.lista, left, contador);
+		this.addAll(array.lista, right, contador);
+	}
+	
+	
 	public MonitorArray primeraMitad(int primerPosicion, int ultimaPosicion) {
 		// Funcion auxiliar: Retorna una sublista de la clase MonitorArray,
 		// a partir de una lista con un rango el cual determina el primer y
@@ -105,33 +154,15 @@ public class MonitorArray {
 		while(0 < totalElementos){ 
 			listaAux.add(this.pop());
 			totalElementos--;
-			}
+		}
 		return listaAux;
 	}
-	
-    /* Recibe dos listas, que ya estan ordenadas, y verifica que el primer elemento de 
-     * la primera lista es menor al de la segunda, despues agrega al menor en otra lista
-     * y asi hasta que una de las dos esté vacia
-     */
-	public int[] merge(MonitorArray left, MonitorArray right) {
-		int[] listaOrdenada = new int[left.size() + right.size()];
-		int posicionActual = 0;
-		while(!left.isEmpty() && !right.isEmpty()) {
-			if(left.peek() <= right.peek())
-				listaOrdenada[posicionActual] = left.pop();
-			else
-				listaOrdenada[posicionActual] = right.pop();
-			posicionActual++;
-		}
-		this.addAll(listaOrdenada, left, posicionActual);
-		this.addAll(listaOrdenada, right, posicionActual);
-		return listaOrdenada;
-	}
 
-	private void addAll(int[] listaOrdenada, MonitorArray lista, int posicionActual) {
-		while(!lista.isEmpty()) {
-			listaOrdenada[posicionActual] = lista.pop();
-			posicionActual++;
+	
+	private void addAll(int[] nuevaListaOrdenada, MonitorArray listaOrdenada, int contador) {
+		while(!listaOrdenada.isEmpty()) { 
+			nuevaListaOrdenada[contador] = listaOrdenada.pop();
+			contador++;
 		}
 	}
 

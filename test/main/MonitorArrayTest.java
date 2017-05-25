@@ -72,8 +72,20 @@ public class MonitorArrayTest {
 		// Compruebo que al quitarle los elementos, los cuales son la primera mitad de la lista
 		// original, queda vacia.
 		assertTrue(sublista.isEmpty());
+	}
+	
+	@Test
+	public void mergesort() {
 		
+		lista.add(12);
+		lista.add(20);
+		lista.add(123);
+		lista.add(1);
 		
+		lista.mergeSort(lista);
+		
+		int primero = lista.pop();
+		assertTrue(primero < lista.peek());
 	}
 	
 	
