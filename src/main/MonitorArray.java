@@ -22,9 +22,9 @@ public class MonitorArray {
 
 
     /**
-     * add que agrega un elemento al final de la lista (si no hay suficiente espacio en el
-     array debe crearse uno nuevo del doble de tama�o y copiar todos los elementos
-     contenidos en el original)
+     *  add que agrega un elemento al final de la lista (si no hay suficiente espacio en el
+     *  array debe crearse uno nuevo del doble de tama�o y copiar todos los elementos
+     *  contenidos en el original)
      * @param e
      */
     public synchronized void add(int e) {
@@ -72,11 +72,10 @@ public class MonitorArray {
     }
 
 
+
     public int[] getLista() {
     	return lista;
-    }
 
-    
     /**	Ordena los elementos de dos listas de menor a mayor en una lista.
      * 	Las listas ingresadas deben estar ordenadas de menor a mayor
      */
@@ -88,13 +87,12 @@ public class MonitorArray {
 				nuevaLista.add(left.pop());
 			else
 				nuevaLista.add(right.pop());
-		}
-		
 		addAll(nuevaLista, left);
 		addAll(nuevaLista, right);
 		
 		return nuevaLista;
 	}
+
 
 	
 	/**	 Agrega todos los elementos de una lista en la nueva lista
@@ -102,8 +100,6 @@ public class MonitorArray {
 	private void addAll(MonitorArray nuevaLista, MonitorArray listaOrdenada) {
 		while(!listaOrdenada.isEmpty()) {
 			nuevaLista.add(listaOrdenada.pop());
-		}
-	}
 
 	
 	public void mergeSort(MonitorArray array) {
