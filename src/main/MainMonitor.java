@@ -23,11 +23,11 @@ public class MainMonitor {
 		System.out.println (Arrays.toString(lista.getLista()));
 		System.out.println ("---------------------------------------------");
  
-		lista.sort(6);
+		lista.sort(5);
 
-		System.out.println (LocalDateTime.now());
-		System.out.println (Arrays.toString(lista.getLista()));
-		System.out.println (LocalDateTime.now());
+//		System.out.println (LocalDateTime.now());
+//		System.out.println (Arrays.toString(lista.getLista()));
+//		System.out.println (LocalDateTime.now());
     } 
 
 }
