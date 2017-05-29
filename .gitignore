@@ -24,3 +24,10 @@ hs_err_pid*
 .classpath
 .project
 /bin1/
+
+#Intellij
+# Intellij
+.idea/
+node_modules/
+*.iml
+*.iws
