@@ -5,6 +5,8 @@ public class MonitorArray {
     private int limite = 10;
     private int[] lista = new int[limite];
     private int contadorPosicion = 0;
+    private ThreadSort thread = new ThreadSort();
+    
 
     public synchronized int size(){ return contadorPosicion;}
 
@@ -69,72 +71,72 @@ public class MonitorArray {
         return resultado;
     }
 
-    /*
-    mergesort ( list ) {
-		if ( list . size () <= 1) return;
-		left = list . sublist (0, list . size ()/2);
-		right = list . sublist ( list . size ()/2 , list . size ());
-		mergesort ( left );
-		mergesort ( right );
-		list = merge (left , right );
-		}
-     */
 
-    public synchronized void mergesort(MonitorArray list){
-    	if (this.size() <= 1) { }
-    	else {
-    		MonitorArray left = list.primeraMitad(0, list.size()/2);
-    		MonitorArray right = list;
-    		this.mergesort(left);
-    		this.mergesort(right);
-    		//list = merge(left, right);
-    		
-    		
-    	}
-   
+    public int[] getLista() {
+    	return lista;
     }
 
-
-	public MonitorArray primeraMitad(int primerPosicion, int ultimaPosicion) {
-		// Funcion auxiliar: Retorna una sublista de la clase MonitorArray,
-		// a partir de una lista con un rango el cual determina el primer y
-		// ultimo elemento de esa sublista.
-		MonitorArray listaAux = new MonitorArray();
-		int totalElementos = ultimaPosicion - primerPosicion;
-		
-		while(0 < totalElementos){ 
-			listaAux.add(this.pop());
-			totalElementos--;
-			}
-		return listaAux;
-	}
-	
-    /* Recibe dos listas, que ya estan ordenadas, y verifica que el primer elemento de 
-     * la primera lista es menor al de la segunda, despues agrega al menor en otra lista
-     * y asi hasta que una de las dos esté vacia
+    
+    /**	Ordena los elementos de dos listas de menor a mayor en una lista.
+     * 	Las listas ingresadas deben estar ordenadas de menor a mayor
      */
-	public int[] merge(MonitorArray left, MonitorArray right) {
-		int[] listaOrdenada = new int[left.size() + right.size()];
-		int posicionActual = 0;
+	public MonitorArray merge(MonitorArray left, MonitorArray right) {
+		MonitorArray nuevaLista = new MonitorArray();
+		
 		while(!left.isEmpty() && !right.isEmpty()) {
 			if(left.peek() <= right.peek())
-				listaOrdenada[posicionActual] = left.pop();
+				nuevaLista.add(left.pop());
 			else
-				listaOrdenada[posicionActual] = right.pop();
-			posicionActual++;
+				nuevaLista.add(right.pop());
 		}
-		this.addAll(listaOrdenada, left, posicionActual);
-		this.addAll(listaOrdenada, right, posicionActual);
-		return listaOrdenada;
+		
+		addAll(nuevaLista, left);
+		addAll(nuevaLista, right);
+		
+		return nuevaLista;
 	}
 
-	private void addAll(int[] listaOrdenada, MonitorArray lista, int posicionActual) {
-		while(!lista.isEmpty()) {
-			listaOrdenada[posicionActual] = lista.pop();
-			posicionActual++;
+	
+	/**	 Agrega todos los elementos de una lista en la nueva lista
+	 */
+	private void addAll(MonitorArray nuevaLista, MonitorArray listaOrdenada) {
+		while(!listaOrdenada.isEmpty()) {
+			nuevaLista.add(listaOrdenada.pop());
 		}
 	}
 
-    
+	
+	public void mergeSort(MonitorArray array) {
+		if(array.size() == 1) {
+			thread.add(array);
+		} else {
+			MonitorArray left  = firstHalf(array); 
+			MonitorArray right = array;
+			
+			mergeSort(left);
+			mergeSort(right);
+		}
+	}
 
+	
+	/*	Retorna la primera mitad de un Monitor Array
+	 */
+	private MonitorArray firstHalf(MonitorArray array) {
+		MonitorArray half = new MonitorArray();
+		int mid = array.size() / 2;
+		while(array.size() > mid)
+			half.add(array.pop());
+		return half;
+	}
+	       
+	
+	public void sort(int numThreads) {
+		thread.setSizeArray(this.size());
+		mergeSort(this);
+		thread.setNroThreads(numThreads);
+		thread.start();
+	}
+
+	
+	
 }

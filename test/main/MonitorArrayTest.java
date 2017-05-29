@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import main.MonitorArray;
 
 public class MonitorArrayTest {
 	
@@ -51,32 +50,63 @@ public class MonitorArrayTest {
 	
 	
 	@Test
-	public void cuandoHagoUnaSublistaHastalaPrimeraMitadDeElementosReciboUnaListaDeLaPrimeraALaMitad() {
+	public void merge() {
+		
+		MonitorArray left = new MonitorArray();
+		MonitorArray right = new MonitorArray();
+		
+		lista.add(12);
+		lista.add(20);
+		lista.add(123);
 		lista.add(1);
 		lista.add(3);
-		lista.add(4);
-		lista.add(6);
 		
-		MonitorArray sublista = lista.primeraMitad(0, 2);
+		left.add(3);
+		left.add(12);
+		left.add(20);
 		
-		// Compruebo que recibo la mitad de elementos.
-		assertEquals(2, sublista.size());
+		right.add(1);
+		right.add(123);
 		
-		int primerElemento = sublista.pop();
-		int segundoElemento = sublista.pop();
+		lista = lista.merge(left, right);
+		assertEquals(5, lista.size());
 		
-		// Compruebo que la sublista tiene los elementos correspondientes.
-		assertEquals(1, primerElemento);
-		assertEquals(3, segundoElemento);
+		int primero = lista.pop();
+		int segundo = lista.pop();
+		int tercero = lista.pop();
+		int cuarto = lista.pop();
+		int quinto = lista.pop();
 		
-		// Compruebo que al quitarle los elementos, los cuales son la primera mitad de la lista
-		// original, queda vacia.
-		assertTrue(sublista.isEmpty());
-		
-		
+		assertEquals(1, primero);
+		assertEquals(3, segundo);
+		assertEquals(12, tercero);
+		assertEquals(20, cuarto);
+		assertEquals(123, quinto);
 	}
 	
 	
-	
+	@Test
+	public void mergeSort() {
+		
+		lista.add(12);
+		lista.add(20);
+		lista.add(123);
+		lista.add(1);
+		lista.add(3);
+		
+		lista.mergeSort(lista);
+		
+		int primero = lista.pop();
+		int segundo = lista.pop();
+		int tercero = lista.pop();
+		int cuarto = lista.pop();
+		int quinto = lista.pop();
+		
+		assertEquals(1, primero);
+		assertEquals(3, segundo);
+		assertEquals(12, tercero);
+		assertEquals(20, cuarto);
+		assertEquals(123, quinto);
+	}
 
 }
