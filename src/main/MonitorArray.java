@@ -1,11 +1,15 @@
 package main;
 
+
+
 public class MonitorArray {
 
     private int limite = 10;
     private int[] lista = new int[limite];
     private int contadorPosicion = 0;
-    private ThreadSort thread = new ThreadSort();
+    private BufferArray buffer = new BufferArray();
+    private Boolean permiso = true;
+	private int nroThreads = 0;
     
 
     public synchronized int size(){ return contadorPosicion;}
@@ -77,14 +81,14 @@ public class MonitorArray {
     	return lista;
     }
     
-    public synchronized void setLista(int[] lista) {
+    private synchronized void setLista(int[] lista) {
     	this.lista = lista;
     }
     	
     /**	Ordena los elementos de dos listas de menor a mayor en una lista.
      * 	Las listas ingresadas deben estar ordenadas de menor a mayor
      */
-	public MonitorArray merge(MonitorArray left, MonitorArray right) {
+	private MonitorArray merge(MonitorArray left, MonitorArray right) {
 		MonitorArray nuevaLista = new MonitorArray();
 		
 		while(!left.isEmpty() && !right.isEmpty()) {
@@ -111,7 +115,7 @@ public class MonitorArray {
 	
 	private void mergeSort(MonitorArray array) {
 		if(array.size() == 1) {
-			thread.add(array);
+			buffer.add(array);
 		} else {
 			MonitorArray left  = firstHalf(array); 
 			MonitorArray right = array;
@@ -133,11 +137,77 @@ public class MonitorArray {
 	}
 	       
 	
-	public void sort(int numThreads) {
+	public void sort(int numThreads) throws ListaYaOrdenadaException {
+		if (1 >= this.size()){
+			throw new ListaYaOrdenadaException("No se puede ordenar una lista con un solo elemento.");
+		}
 		mergeSort(this);
-		thread.setArray(this);
-		thread.setNroThreads(numThreads);
-		thread.start();
+		lanzarThread(numThreads, this);	
+		esperarAQueFinalicenLosThreads(numThreads);
+	}
+
+	private synchronized void esperarAQueFinalicenLosThreads(int numThreads) {
+		while(nroThreads != numThreads) {
+			try { wait(); }
+            catch (InterruptedException e) {  }
+		}
+		nroThreads = 0;
 	}
 	
+	private synchronized void sumarThreadTerminado() {
+		nroThreads =+ 1;
+		notify();
+	}
+	
+	private synchronized void pedirTurno(){
+		 while (! permiso) {
+	            try { wait(); }
+	            catch (InterruptedException e) {  }
+	      }
+		 permiso = false;
+	}
+	
+	private synchronized void liberarTurno() {
+		permiso = true;
+		notifyAll();
+	}
+	
+	private synchronized void lanzarThread(int nroThreads, MonitorArray originalArray){
+		for(int i = 0; i < nroThreads; i++) {
+			new Thread() {
+		        @Override
+		        public synchronized void run() {
+		        	MonitorArray array = new MonitorArray();
+		        		
+		        		
+		        	while(! buffer.isEmpty() ) {
+		        		System.out.println("El " + this.getName() + " va a pedir un turno, " + "Tamaño buffer: " + buffer.size());
+		        		pedirTurno();
+		        		System.out.println("El " + this.getName() + " inicio un ciclo, " + "Tamaño buffer: " + buffer.size());
+		        		
+		        		if (buffer.size() == 2) {
+		        			System.out.println("El " + this.getName() + " ingreso a if");
+		        			array = array.merge(buffer.pop(), buffer.pop());
+		        			originalArray.setLista(array.getLista());
+		        			originalArray.contadorPosicion = array.contadorPosicion;
+		        			
+		        		} else  
+		        			if (!buffer.isEmpty()){	        	
+		        			System.out.println("El " + this.getName() + " ingreso a else");
+			        		array = array.merge(buffer.pop(), buffer.pop());
+			        		buffer.add(array);
+			     		
+		        		}
+		        		System.out.println("El " + this.getName() + " finalizo un ciclo, " + "Tamaño buffer: " + buffer.size());
+		        		liberarTurno();
+		 			
+		        	}
+				}
+		    }.start();
+		    originalArray.sumarThreadTerminado();
+		    System.out.println(originalArray.nroThreads);
+		}
+		
+	}
+
 }

@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class MainMonitor {
 	
-	public static void main (String [ ] args) {
+	public static void main (String [ ] args) throws ListaYaOrdenadaException {
 		 
 		MonitorArray lista = new MonitorArray();
 		
@@ -27,6 +27,7 @@ public class MainMonitor {
 		
 		System.out.println (LocalDateTime.now());
 		System.out.println (Arrays.toString(lista.getLista()));
+		System.out.println (lista.size());
 		System.out.println (LocalDateTime.now());
     } 
 

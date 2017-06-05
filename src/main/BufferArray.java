@@ -1,48 +1,40 @@
 package main;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BufferArray {
 	
-	private Map<MonitorArray, Integer> map = new HashMap<MonitorArray, Integer>();
+	private List<MonitorArray> list = new ArrayList<MonitorArray>();
 
-	public synchronized void add(MonitorArray array, int size) {
-		map.put(array, size);
+	public synchronized void add(MonitorArray array) {
+		list.add(list.size(), array);
 		notifyAll();
 	}
 
 	public synchronized MonitorArray pop() {
-		MonitorArray array = this.peek();
-		map.remove(array);
+		MonitorArray array = list.get(0);
+		list.remove(0);
 		return array;
 	}
 
 	public synchronized boolean isEmpty() {
-		return map.isEmpty();
+		return list.isEmpty();
 	}
 
 	
-	/*	Retorna el primer monitor array del map, sin sacarlo
+	/*	Retorna el primer monitor array de la lista, sin sacarlo
 	 */
 	public synchronized MonitorArray peek() {
 		while (this.isEmpty()) {
             try { wait(); }
             catch (InterruptedException e) {  }
 		}
-		return map.keySet().iterator().next();
+		return list.get(0);
 	}
-
-	
-	public synchronized int cantidadDeNivel(int nivelActual) {
-		Collection<Integer> niveles = map.values();
-		return (int) niveles.stream().filter(nivel -> nivel == nivelActual).count();
-	}
-
 
 	public synchronized int size() {
-		return map.size();
+		return list.size();
 	}
 	
 

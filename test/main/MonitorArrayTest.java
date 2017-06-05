@@ -2,6 +2,8 @@ package main;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,34 +50,38 @@ public class MonitorArrayTest {
 		assertFalse(lista.contains(numeroObtenido));
 	}
 	
+	@Test (expected = ListaYaOrdenadaException.class)
+	public void sortConUnElementoYUnThread() throws ListaYaOrdenadaException{
+		lista.add(2);
+		
+		lista.sort(1);
+	}
+	
 	
 	@Test
-	public void merge() {
+	public void sortConCincoElementosYDosThreads() throws ListaYaOrdenadaException {
 		
-		MonitorArray left = new MonitorArray();
-		MonitorArray right = new MonitorArray();
+		MonitorArray array = new MonitorArray();
 		
-		lista.add(12);
-		lista.add(20);
-		lista.add(123);
-		lista.add(1);
-		lista.add(3);
+		array.add(12);
+		array.add(20);
+		array.add(123);
+		array.add(1);
+		array.add(7);
 		
-		left.add(3);
-		left.add(12);
-		left.add(20);
+		System.out.println (Arrays.toString(array.getLista()));
+
+		array.sort(2);
 		
-		right.add(1);
-		right.add(123);
+		System.out.println (Arrays.toString(array.getLista()));
+		assertEquals(5, array.size());
+
 		
-		lista = lista.merge(left, right);
-		assertEquals(5, lista.size());
-		
-		int primero = lista.pop();
-		int segundo = lista.pop();
-		int tercero = lista.pop();
-		int cuarto = lista.pop();
-		int quinto = lista.pop();
+		int primero = array.pop();
+		int segundo = array.pop();
+		int tercero = array.pop();
+		int cuarto = array.pop();
+		int quinto = array.pop();
 		
 		assertEquals(1, primero);
 		assertEquals(3, segundo);
