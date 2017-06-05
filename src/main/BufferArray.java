@@ -3,7 +3,6 @@ package main;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class BufferArray {
 	
@@ -15,17 +14,12 @@ public class BufferArray {
 	}
 
 	public synchronized MonitorArray pop() {
-		while (this.isEmpty()) {
-            try { wait(); }
-            catch (InterruptedException e) {  }
-		}
-            
-		MonitorArray array = map.keySet().iterator().next();
-		map.remove(0);
+		MonitorArray array = this.peek();
+		map.remove(array);
 		return array;
 	}
 
-	private boolean isEmpty() {
+	public synchronized boolean isEmpty() {
 		return map.isEmpty();
 	}
 
@@ -43,23 +37,13 @@ public class BufferArray {
 	
 	public synchronized int cantidadDeNivel(int nivelActual) {
 		Collection<Integer> niveles = map.values();
-		Integer cantNiveles = 0;
-		for(Integer nivel : niveles) {
-			if(nivel == nivelActual) 
-				cantNiveles++;
-		}
-		return cantNiveles;
+		return (int) niveles.stream().filter(nivel -> nivel == nivelActual).count();
 	}
 
-	public Set<MonitorArray> getArrays() {
-		return map.keySet();
-	}
 
-	public int size() {
-		// TODO Auto-generated method stub
+	public synchronized int size() {
 		return map.size();
 	}
-	
 	
 
 }

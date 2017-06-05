@@ -73,9 +73,14 @@ public class MonitorArray {
 
 
 
-    public int[] getLista() {
+    public synchronized int[] getLista() {
     	return lista;
-
+    }
+    
+    public synchronized void setLista(int[] lista) {
+    	this.lista = lista;
+    }
+    	
     /**	Ordena los elementos de dos listas de menor a mayor en una lista.
      * 	Las listas ingresadas deben estar ordenadas de menor a mayor
      */
@@ -87,6 +92,7 @@ public class MonitorArray {
 				nuevaLista.add(left.pop());
 			else
 				nuevaLista.add(right.pop());
+		}
 		addAll(nuevaLista, left);
 		addAll(nuevaLista, right);
 		
@@ -98,11 +104,12 @@ public class MonitorArray {
 	/**	 Agrega todos los elementos de una lista en la nueva lista
 	 */
 	private void addAll(MonitorArray nuevaLista, MonitorArray listaOrdenada) {
-		while(!listaOrdenada.isEmpty()) {
+		while(!listaOrdenada.isEmpty())
 			nuevaLista.add(listaOrdenada.pop());
+	}
 
 	
-	public void mergeSort(MonitorArray array) {
+	private void mergeSort(MonitorArray array) {
 		if(array.size() == 1) {
 			thread.add(array);
 		} else {
@@ -127,12 +134,10 @@ public class MonitorArray {
 	       
 	
 	public void sort(int numThreads) {
-		thread.setSizeArray(this.size());
 		mergeSort(this);
+		thread.setArray(this);
 		thread.setNroThreads(numThreads);
 		thread.start();
 	}
-
-	
 	
 }

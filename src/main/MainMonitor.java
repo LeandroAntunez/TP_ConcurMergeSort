@@ -9,7 +9,7 @@ public class MainMonitor {
 		 
 		MonitorArray lista = new MonitorArray();
 		
-		lista.add(30);	lista.add(40);
+		lista.add(78);	lista.add(40);
 		lista.add(2);	lista.add(324);
 		lista.add(3);	lista.add(34);
 		lista.add(6);	lista.add(46);
@@ -23,11 +23,11 @@ public class MainMonitor {
 		System.out.println (Arrays.toString(lista.getLista()));
 		System.out.println ("---------------------------------------------");
  
-		lista.sort(5);
-
-//		System.out.println (LocalDateTime.now());
-//		System.out.println (Arrays.toString(lista.getLista()));
-//		System.out.println (LocalDateTime.now());
+		lista.sort(6);
+		
+		System.out.println (LocalDateTime.now());
+		System.out.println (Arrays.toString(lista.getLista()));
+		System.out.println (LocalDateTime.now());
     } 
 
 }

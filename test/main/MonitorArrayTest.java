@@ -83,30 +83,6 @@ public class MonitorArrayTest {
 		assertEquals(20, cuarto);
 		assertEquals(123, quinto);
 	}
-	
-	
-	@Test
-	public void mergeSort() {
-		
-		lista.add(12);
-		lista.add(20);
-		lista.add(123);
-		lista.add(1);
-		lista.add(3);
-		
-		lista.mergeSort(lista);
-		
-		int primero = lista.pop();
-		int segundo = lista.pop();
-		int tercero = lista.pop();
-		int cuarto = lista.pop();
-		int quinto = lista.pop();
-		
-		assertEquals(1, primero);
-		assertEquals(3, segundo);
-		assertEquals(12, tercero);
-		assertEquals(20, cuarto);
-		assertEquals(123, quinto);
-	}
+
 
 }
