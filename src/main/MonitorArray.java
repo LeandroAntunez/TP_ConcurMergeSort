@@ -155,7 +155,7 @@ public class MonitorArray {
 	}
 	
 	private synchronized void sumarThreadTerminado() {
-		nroThreads =+ 1;
+		nroThreads++;
 		notify();
 	}
 	
@@ -181,9 +181,9 @@ public class MonitorArray {
 		        		
 		        		
 		        	while(! buffer.isEmpty() ) {
-		        		System.out.println("El " + this.getName() + " va a pedir un turno, " + "Tamaño buffer: " + buffer.size());
+		        		System.out.println("El " + this.getName() + " va a pedir un turno, " + "Tamaï¿½o buffer: " + buffer.size());
 		        		pedirTurno();
-		        		System.out.println("El " + this.getName() + " inicio un ciclo, " + "Tamaño buffer: " + buffer.size());
+		        		System.out.println("El " + this.getName() + " inicio un ciclo, " + "Tamaï¿½o buffer: " + buffer.size());
 		        		
 		        		if (buffer.size() == 2) {
 		        			System.out.println("El " + this.getName() + " ingreso a if");
@@ -198,14 +198,14 @@ public class MonitorArray {
 			        		buffer.add(array);
 			     		
 		        		}
-		        		System.out.println("El " + this.getName() + " finalizo un ciclo, " + "Tamaño buffer: " + buffer.size());
+		        		System.out.println("El " + this.getName() + " finalizo un ciclo, " + "Tamaï¿½o buffer: " + buffer.size());
 		        		liberarTurno();
 		 			
 		        	}
+		        	originalArray.sumarThreadTerminado();
+		        	System.out.println("Numero de Threads terminados: " + originalArray.nroThreads);
 				}
 		    }.start();
-		    originalArray.sumarThreadTerminado();
-		    System.out.println(originalArray.nroThreads);
 		}
 		
 	}
