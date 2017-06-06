@@ -9,7 +9,7 @@ public class MonitorArray {
     private int contadorPosicion = 0;
     private BufferArray buffer = new BufferArray();
     private Boolean permiso = true;
-	private int nroThreads = 0;
+	private int threadsLanzados = 0;
     
 
     public synchronized int size(){ return contadorPosicion;}
@@ -147,15 +147,15 @@ public class MonitorArray {
 	}
 
 	private synchronized void esperarAQueFinalicenLosThreads(int numThreads) {
-		while(nroThreads != numThreads) {
+		while(threadsLanzados != numThreads) {
 			try { wait(); }
             catch (InterruptedException e) {  }
 		}
-		nroThreads = 0;
+		threadsLanzados = 0;
 	}
 	
 	private synchronized void sumarThreadTerminado() {
-		nroThreads++;
+		threadsLanzados++;
 		notify();
 	}
 	
@@ -203,7 +203,7 @@ public class MonitorArray {
 		 			
 		        	}
 		        	originalArray.sumarThreadTerminado();
-		        	System.out.println("Numero de Threads terminados: " + originalArray.nroThreads);
+		        	System.out.println("Numero de Threads terminados: " + originalArray.threadsLanzados);
 				}
 		    }.start();
 		}
