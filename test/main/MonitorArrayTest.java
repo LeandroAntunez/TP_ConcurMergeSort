@@ -61,33 +61,21 @@ public class MonitorArrayTest {
 	@Test
 	public void sortConCincoElementosYDosThreads() throws ListaYaOrdenadaException {
 		
-		MonitorArray array = new MonitorArray();
+		lista.add(12);
+		lista.add(20);
+		lista.add(123);
+		lista.add(1);
+		lista.add(7);
 		
-		array.add(12);
-		array.add(20);
-		array.add(123);
-		array.add(1);
-		array.add(7);
+		lista.sort(2);
 		
-		System.out.println (Arrays.toString(array.getLista()));
+		assertEquals(5, lista.size());
 
-		array.sort(2);
-		
-		System.out.println (Arrays.toString(array.getLista()));
-		assertEquals(5, array.size());
-
-		
-		int primero = array.pop();
-		int segundo = array.pop();
-		int tercero = array.pop();
-		int cuarto = array.pop();
-		int quinto = array.pop();
-		
-		assertEquals(1, primero);
-		assertEquals(3, segundo);
-		assertEquals(12, tercero);
-		assertEquals(20, cuarto);
-		assertEquals(123, quinto);
+		assertEquals(1, lista.pop()); 	//primero
+		assertEquals(7, lista.pop());	//segundo
+		assertEquals(12, lista.pop());	//tercero
+		assertEquals(20, lista.pop());	//cuarto
+		assertEquals(123, lista.pop());	//quinto
 	}
 
 
