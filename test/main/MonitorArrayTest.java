@@ -1,8 +1,12 @@
 package main;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -78,5 +82,26 @@ public class MonitorArrayTest {
 		assertEquals(123, lista.pop());	//quinto
 	}
 
+	
+	@Test
+	public void sortCon100ElementosY3Threads() throws ListaYaOrdenadaException {
+		
+		List<Integer> listaOrdenada = new ArrayList<Integer>();
+		for(int i = 0; i < 100; i++) {
+			int num = new Random().nextInt(1000);
+			listaOrdenada.add(num);
+			lista.add(num);
+		}
+		
+		lista.sort(3);
+		Collections.sort(listaOrdenada);
+		
+		List<Integer> listSort = new ArrayList<Integer>();
+		for(int i = 0; i < 100; i++) {
+			listSort.add(lista.getLista()[i]);
+		}
+		
+		assertEquals(listSort, listaOrdenada);
+	}
 
 }
