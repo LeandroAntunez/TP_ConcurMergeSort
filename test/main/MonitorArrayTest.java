@@ -104,4 +104,25 @@ public class MonitorArrayTest {
 		assertEquals(listSort, listaOrdenada);
 	}
 
+	
+	@Test
+	public void sortCon1000ElementosY6Threads() throws ListaYaOrdenadaException {
+		
+		List<Integer> listaOrdenada = new ArrayList<Integer>();
+		for(int i = 0; i < 1000; i++) {
+			int num = new Random().nextInt(5000);
+			listaOrdenada.add(num);
+			lista.add(num);
+		}
+		
+		lista.sort(6);
+		Collections.sort(listaOrdenada);
+		
+		List<Integer> listSort = new ArrayList<Integer>();
+		for(int i = 0; i < 1000; i++) {
+			listSort.add(lista.getLista()[i]);
+		}
+		
+		assertEquals(listSort, listaOrdenada);
+	}
 }
