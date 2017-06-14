@@ -2,7 +2,7 @@ package main;
 
 
 
-public class MonitorArray {
+public class MonitorArray extends Thread {
 
     private int limite = 10;
     private int[] lista = new int[limite];
@@ -10,6 +10,7 @@ public class MonitorArray {
     private BufferArray buffer = new BufferArray();
     private Boolean permiso = true;
 	private int threadsLanzados = 0;
+	private int threadsEjecutandose = 0;
     
 
     public synchronized int size(){ return contadorPosicion;}
@@ -172,42 +173,91 @@ public class MonitorArray {
 		notifyAll();
 	}
 	
+	/*
+	 * (while) Mientras haya elementos por mergear.
+	 * 
+	 * 			(if) Si hay elementos en el nivel N.
+	 * 
+	 * 					(if) Si hay otro thread accediendo a dos elementos para mergear.
+	 * 							(wait) espera.
+	 * 					garantizar exclusion mutua.
+	 * 					extrae 2 elementos.
+	 * 					(notify) finalizar la exclusion mutua
+	 * 
+	 * 			(else) Si no hay elementos en el nivel N
+	 * 
+	 * 					(recursion) busca elementos en el nivel N+1.
+	 * 
+	 * 
+	 *  - Luego de extraer, ¿mergear antes o despues del notify?
+	 *  
+	 *  - ¿Como garantizar que al mergear, despues deposite el bloque en el nivel N+1 en el orden esperado
+	 *  por otros threads? Ejemplo: A1, A2, A3, A4 podrian quedar por error como B2(A3,A4), B1(A1,A2).
+	 *  
+	 *  - ¿Cual es la condicion por la cual ya no hay elementos por mergear en un buffer multinivel?
+	 *  
+	 * 	- ¿Que hacer si la cantidad de bloques a ordenar es impar?	
+	 * */
+	
+	
+	
+	private synchronized void finalizarEjecucion() {
+		this.threadsEjecutandose--;
+	}
+
+	
+	private synchronized void iniciarCiclo() {
+		this.threadsEjecutandose++;
+	}
+	
+	private synchronized Boolean haythreadsEjecutandose() {
+		return  0 < threadsEjecutandose;
+	}
+	
 	private synchronized void lanzarThread(int nroThreads, MonitorArray originalArray){
 		for(int i = 0; i < nroThreads; i++) {
-			new Thread() {
-		        @Override
-		        public synchronized void run() {
-		        	MonitorArray array = new MonitorArray();
-		        		
-		        		
-		        	while(! buffer.isEmpty() ) {
-		        		System.out.println("El " + this.getName() + " va a pedir un turno, " + "Tamaï¿½o buffer: " + buffer.size());
-		        		pedirTurno();
-		        		System.out.println("El " + this.getName() + " inicio un ciclo, " + "Tamaï¿½o buffer: " + buffer.size());
-		        		
-		        		if (buffer.size() == 2) {
-		        			System.out.println("El " + this.getName() + " ingreso a if");
-		        			array = array.merge(buffer.pop(), buffer.pop());
-		        			originalArray.setLista(array.getLista());
-		        			originalArray.contadorPosicion = array.contadorPosicion;
-		        			
-		        		} else  
-		        			if (!buffer.isEmpty()){	        	
-		        			System.out.println("El " + this.getName() + " ingreso a else");
-			        		array = array.merge(buffer.pop(), buffer.pop());
-			        		buffer.add(array);
-			     		
-		        		}
-		        		System.out.println("El " + this.getName() + " finalizo un ciclo, " + "Tamaï¿½o buffer: " + buffer.size());
-		        		liberarTurno();
-		 			
-		        	}
-		        	originalArray.sumarThreadTerminado();
-		        	System.out.println("Numero de Threads terminados: " + originalArray.threadsLanzados);
+			new MonitorArray() {
+				@Override
+			    public synchronized void run() {
+			    	MonitorArray array = new MonitorArray();
+			    	
+			    	while(! buffer.isEmpty() ){
+			    		pedirTurno();
+			    		if (buffer.size() == 2 && !haythreadsEjecutandose()) {
+			    			System.out.println("[IF-MERGE] " + this.getName() + "[Tamaño buffer] "
+				    				+ buffer.size() + ", [Threads esperando]: " + originalArray.threadsEjecutandose + "\n");
+			    			MonitorArray elem1 = buffer.pop();
+			    			MonitorArray elem2 = buffer.pop();
+			    			liberarTurno();
+			    			System.out.println("[IF-MERGE] " + this.getName() + "[Tamaño buffer] "
+				    				+ buffer.size());
+			    			
+			    			array = array.merge(elem1, elem2);
+			    			originalArray.setLista(array.getLista());
+			    			originalArray.contadorPosicion = array.contadorPosicion;
+			    			
+			    		} else if (!buffer.isEmpty() && buffer.size() > 2 ){
+			    				iniciarCiclo();
+			    				System.out.println("[ELSE-MERGE] " + this.getName() + "[Tamaño buffer] "
+					    				+ buffer.size() + ", [Threads esperando]: " + originalArray.threadsEjecutandose + "\n");
+			    				MonitorArray elem1 = buffer.pop();
+				    			MonitorArray elem2 = buffer.pop();
+				    			liberarTurno();
+				    			
+				    			array = array.merge(elem1, elem2);
+			    				buffer.add(array);
+			    				System.out.println("[Finalizo Else] " + this.getName() + "[Tamaño buffer] "
+					    				+ buffer.size());
+			    				finalizarEjecucion();
+			    		} else {
+			    			liberarTurno();
+			    		}
+			    	}
+			    	originalArray.sumarThreadTerminado();
+			    	System.out.println("Numero de Threads terminados: " + originalArray.threadsLanzados);
 				}
 		    }.start();
 		}
-		
 	}
-
+	
 }
